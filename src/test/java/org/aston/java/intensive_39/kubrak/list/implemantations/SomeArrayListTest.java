@@ -3,34 +3,33 @@ package org.aston.java.intensive_39.kubrak.list.implemantations;
 import org.aston.java.intensive_39.kubrak.list.interfaces.SomeList;
 import org.junit.jupiter.api.*;
 
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SomeArrayListTest {
 
     private static SomeList<String> someListString;
 
-    private static String testString0;
-    private static String testString1;
+
+    private static final String TEST_STRING_0 = "testString0";
+    private static final String TEST_STRING_1 = "testString1";
 
 
     @BeforeAll
     static void setUpInit() {
+
         someListString = new SomeArrayList<>();
-        testString0 = "testString0";
-        testString1 = "testString1";
     }
 
 
     @BeforeEach
     void setUp() {
 
-        someListString.put(testString0);
-        someListString.put(testString1);
+        someListString.put(TEST_STRING_0);
+        someListString.put(TEST_STRING_1);
     }
 
     @AfterEach
@@ -55,9 +54,9 @@ class SomeArrayListTest {
 
         //then
         assertThat(someListString.size()).isEqualTo(initialSize + 2);
+
         assertThat(testString2Check).isEqualTo(testString2);
         assertThat(testString3Check).isEqualTo(testString3);
-
     }
 
     @DisplayName("Вставка элемента")
@@ -70,18 +69,33 @@ class SomeArrayListTest {
 
         //when
         someListString.insert(testString2, 1);
-        String testString2Check = someListString.get(1);
 
         //then
-        assertThat(testString2Check).isEqualTo(testString2);
         assertThat(someListString.size()).isEqualTo(initialSize + 1);
-        assertThat(someListString.get(2)).isEqualTo(testString1);
 
+        for (int i = 0; i < someListString.size(); i++) {
+            if (i == 1) {
+                assertThat(someListString.get(i)).isEqualTo(testString2);
+                assertThat(someListString.get(i + 1)).isEqualTo(TEST_STRING_1);
+            } else {
+                assertThat(someListString.get(i)).isNotEqualTo(testString2);
+            }
+        }
+    }
+
+    @DisplayName("Вставка,замена,удаление,получение элемента (negative)")
+    @Test
+    void indexOutOfBoundsTest() {
+
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {someListString.get(696);});
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {someListString.set("test", 696);});
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {someListString.delete(696);});
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {someListString.insert("test", 696);});
     }
 
     @DisplayName("Удаление элемента")
     @Test
-    void deleteTest() {
+    void deleteTestPositive() {
 
         //given
         int initialSize = someListString.size();
@@ -91,7 +105,9 @@ class SomeArrayListTest {
 
         //then
         assertThat(someListString.size()).isEqualTo(initialSize - 1);
-        assertThat(someListString.contains(testString1)).isFalse();
+        for (int i = 0; i < someListString.size(); i++) {
+            assertThat(someListString.get(i)).isNotEqualTo(TEST_STRING_1);
+        }
     }
 
     @DisplayName("Проверка пустая ли коллекция (positive)")
@@ -106,28 +122,21 @@ class SomeArrayListTest {
 
         //then
         assertThat(someListString.size()).isNotEqualTo(initialSize);
-        assertThat(someListString.size()).isEqualTo(0);
+        assertThat(someListString.size()).isZero();
         assertThat(someListString.isEmpty()).isTrue();
-        assertThat(someListString.contains(testString0)).isFalse();
-        assertThat(someListString.contains(testString1)).isFalse();
+        assertThat(someListString.contains(TEST_STRING_0)).isFalse();
+        assertThat(someListString.contains(TEST_STRING_1)).isFalse();
     }
 
     @DisplayName("Проверка пустая ли коллекция (negative)")
     @Test
     void isEmptyTestNegative() {
 
-        //given
-        int initialSize = someListString.size();
 
-        //when
-        someListString.deleteAll();
-
-        //then
-        assertThat(someListString.size()).isNotEqualTo(initialSize);
-        assertThat(someListString.size()).isEqualTo(0);
-        assertThat(someListString.isEmpty()).isTrue();
-        assertThat(someListString.contains(testString0)).isFalse();
-        assertThat(someListString.contains(testString1)).isFalse();
+        assertThat(someListString.size()).isNotZero();
+        assertThat(someListString.isEmpty()).isFalse();
+        assertThat(someListString.contains(TEST_STRING_0)).isTrue();
+        assertThat(someListString.contains(TEST_STRING_1)).isTrue();
     }
 
     @DisplayName("Удаление всех элементов коллекции")
@@ -142,9 +151,9 @@ class SomeArrayListTest {
 
         //then
         assertThat(someListString.size()).isNotEqualTo(initialSize);
-        assertThat(someListString.size()).isEqualTo(0);
-        assertThat(someListString.contains(testString0)).isFalse();
-        assertThat(someListString.contains(testString1)).isFalse();
+        assertThat(someListString.size()).isZero();
+        assertThat(someListString.contains(TEST_STRING_0)).isFalse();
+        assertThat(someListString.contains(TEST_STRING_1)).isFalse();
     }
 
     @DisplayName("Увеличение вместимости коллекции")
@@ -155,17 +164,16 @@ class SomeArrayListTest {
         int initialSize = someListString.size();
 
         //when
-        someListString.put(testString0);
-        someListString.put(testString0);
-        someListString.put(testString0);
-        someListString.put(testString0);
-        someListString.put(testString0);
-        someListString.put(testString0);
-        someListString.put(testString0);
-        someListString.put(testString0);
+        for (int i = 0; i < 1000; i++) {
+            someListString.put(TEST_STRING_0);
+        }
 
         //then
-        assertThat(someListString.size()).isEqualTo(initialSize + 8);
+        assertThat(someListString.size()).isEqualTo(initialSize + 1000);
+        for (int i = 0; i < 10; i++) {
+            assertThat(someListString.get(i)).isNotNull();
+        }
+
     }
 
     @DisplayName("Сортировка")
@@ -217,11 +225,17 @@ class SomeArrayListTest {
 
         //when
         someListString.set(testString2, 1);
-        String testString2Check = someListString.get(1);
 
         //then
-        assertThat(testString2Check).isEqualTo(testString2);
         assertThat(someListString.size()).isEqualTo(initialSize);
+
+        for (int i = 0; i < someListString.size(); i++) {
+            if (i == 1) {
+                assertThat(someListString.get(i)).isEqualTo(testString2);
+            } else {
+                assertThat(someListString.get(i)).isNotEqualTo(testString2);
+            }
+        }
     }
 
     @DisplayName("Получение размера коллекции")

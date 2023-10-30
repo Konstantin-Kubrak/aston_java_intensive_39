@@ -204,7 +204,7 @@ public class SomeArrayList<T> implements SomeList<T> {
     }
 
     /**
-     * Метод сортирует элементы коллекции используя реализацию быстрого поиска {@link org.aston.java.intensive_39.kubrak.list.implemantations.SomeArrayList#quickSort(int, int, Comparator)}.
+     * Метод сортирует элементы коллекции используя реализацию быстрого поиска {@link org.aston.java.intensive_39.kubrak.list.implemantations.SomeArrayList#quickSort(int, int, Comparator)}
      * с учётом переданного в параметрах компаратора.
      *
      * @param comparator, используемый в сортировке.
@@ -231,13 +231,13 @@ public class SomeArrayList<T> implements SomeList<T> {
         int leftIndex = from;
         int rightIndex = to;
 
-        T pivot = (T) this.arrayOfElements[from + (to - from) / 2];
+        T pivot = this.arrayOfElements[from + (to - from) / 2];
         while (leftIndex <= rightIndex) {
             if (Objects.nonNull(comparator)) {
-                while (comparator.compare((T) this.arrayOfElements[leftIndex], pivot) < 0) {
+                while (comparator.compare(this.arrayOfElements[leftIndex], pivot) < 0) {
                     leftIndex++;
                 }
-                while (comparator.compare((T) this.arrayOfElements[rightIndex], pivot) > 0) {
+                while (comparator.compare(this.arrayOfElements[rightIndex], pivot) > 0) {
                     rightIndex--;
                 }
             } else {
@@ -249,7 +249,7 @@ public class SomeArrayList<T> implements SomeList<T> {
                 }
             }
             if (leftIndex <= rightIndex) {
-                T tmp = (T) this.arrayOfElements[leftIndex];
+                T tmp = this.arrayOfElements[leftIndex];
                 this.arrayOfElements[leftIndex] = this.arrayOfElements[rightIndex];
                 this.arrayOfElements[rightIndex] = tmp;
                 leftIndex++;
@@ -273,4 +273,5 @@ public class SomeArrayList<T> implements SomeList<T> {
 
         }
     }
+
 }
